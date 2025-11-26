@@ -3,7 +3,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:my_code_place/app/core/common/extensions/color_extension.dart';
 import 'package:my_code_place/app/ui/theme/app_colors.dart';
 import 'package:my_code_place/app/ui/theme/app_fonts.dart';
-import 'package:my_code_place/main.dart';
 import 'package:signals/signals_flutter.dart';
 
 class AppTheme {
@@ -27,22 +26,22 @@ class AppTheme {
   }
 
   static Future get initialize async {
-    try {
-      var value = session.prefs.getBool('theme');
+    // try {
+    //   var value = session.prefs.getBool('theme');
 
-      if (value == null) return;
-      themeMode.value = value ? ThemeMode.dark : ThemeMode.light;
-    } catch (e) {
-      themeMode.value = ThemeMode.dark;
-    }
+    //   if (value == null) return;
+    //   themeMode.value = value ? ThemeMode.dark : ThemeMode.light;
+    // } catch (e) {
+    //   themeMode.value = ThemeMode.dark;
+    // }
   }
 
   Future changeThemeMode(ThemeMode newTheme) async {
-    themeMode.value = newTheme;
-    if (newTheme == ThemeMode.system) {
-      await session.prefs.remove('theme');
-    }
-    await session.prefs.setBool('theme', newTheme == ThemeMode.dark);
+    // themeMode.value = newTheme;
+    // if (newTheme == ThemeMode.system) {
+    //   await session.prefs.remove('theme');
+    // }
+    // await session.prefs.setBool('theme', newTheme == ThemeMode.dark);
   }
 
   static ThemeData dark = ThemeData(
