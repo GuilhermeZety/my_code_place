@@ -1,22 +1,9 @@
 import 'package:flutter/material.dart' show Rect, Size;
 import 'package:my_code_place/app/core/shared/entities/draggable_item.dart';
-import 'package:my_code_place/app/core/shared/models/card_data.dart';
-import 'package:my_code_place/app/core/shared/models/window_data.dart';
 import 'package:signals/signals_flutter.dart';
 
 class DesktopController {
-  final windows = signal<List<DraggableItem>>([
-    WindowData(
-      id: '1',
-      title: 'Spotify',
-      logo: 'https://upload.wikimedia.org/wikipedia/commons/7/75/Spotify_icon.png',
-      rect: const Rect.fromLTWH(50, 50, 300, 200),
-    ),
-    CardData(
-      id: '2',
-      rect: const Rect.fromLTWH(500, 50, 180, 44),
-    ),
-  ]);
+  final windows = signal<List<DraggableItem>>([]);
 
   void bringToFront(String id) {
     final currentList = [...windows.value];

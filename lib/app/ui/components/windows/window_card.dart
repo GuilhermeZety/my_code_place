@@ -8,6 +8,7 @@ import 'package:my_code_place/app/core/shared/models/window_data.dart';
 import 'package:my_code_place/app/ui/components/windows/window_handle.dart';
 import 'package:my_code_place/app/ui/theme/app_colors.dart';
 import 'package:my_code_place/app/ui/theme/app_fonts.dart';
+import 'package:my_code_place/app/ui/theme/app_icons.dart';
 
 class WindowWidget extends StatefulWidget {
   final WindowData data;
@@ -27,22 +28,17 @@ class WindowWidget extends StatefulWidget {
   State<WindowWidget> createState() => _WindowWidgetState();
 }
 
-// 1. Adicione o Mixin
 class _WindowWidgetState extends State<WindowWidget> with WindowBaseMixin, WindowResizeDragMixin {
-  // --- Implementação dos Contratos do Mixin ---
   @override
   Size get screenSize => widget.screenSize;
-
   @override
   double get minWidth => widget.data.minWidth;
   @override
   double get minHeight => widget.data.minHeight;
-
   @override
   VoidCallback get onFocus => widget.onFocus;
   @override
   Function(Rect) get onUpdate => widget.onUpdate;
-  // ---------------------------------------------
 
   @override
   void initState() {
@@ -78,9 +74,19 @@ class _WindowWidgetState extends State<WindowWidget> with WindowBaseMixin, Windo
       duration: 300.ms,
       decoration: BoxDecoration(
         color: AppColors.grey_800,
-        // getComponentRadius vem do Mixin
         borderRadius: getComponentRadius,
-        boxShadow: [const BoxShadow(color: Colors.black12, blurRadius: 10)],
+        border: Border.all(
+          color: AppColors.grey_900,
+          width: 2,
+          strokeAlign: BorderSide.strokeAlignOutside,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.changeOpacity(0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -153,8 +159,8 @@ class _WindowWidgetState extends State<WindowWidget> with WindowBaseMixin, Windo
             ),
           ),
           const Icon(
-            Icons.close_rounded,
-            size: 20,
+            AppIcons.close,
+            size: 16,
             color: AppColors.grey_700,
           ),
         ],

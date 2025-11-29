@@ -8,29 +8,29 @@ import 'package:my_code_place/app/core/shared/mixins/window_scaled_drag_mixin.da
 import 'package:my_code_place/app/core/shared/models/card_data.dart';
 import 'package:my_code_place/app/ui/components/windows/window_handle.dart';
 import 'package:my_code_place/app/ui/theme/app_colors.dart';
+import 'package:my_code_place/app/ui/theme/app_icons.dart';
 
-class FloatingCard extends StatefulWidget {
+class WindowDragCard extends StatefulWidget {
   final CardData data;
-  final Widget child;
   final Size screenSize;
   final VoidCallback onFocus;
   final Function(Rect) onUpdate;
 
-  const FloatingCard({
+  const WindowDragCard({
     super.key,
     required this.data,
-    required this.child,
     required this.screenSize,
     required this.onFocus,
     required this.onUpdate,
   });
 
   @override
-  State<FloatingCard> createState() => _FloatingCardState();
+  State<WindowDragCard> createState() => _WindowDragCardState();
 }
 
 // 1. Adicione o Mixin aqui
-class _FloatingCardState extends State<FloatingCard> with WindowBaseMixin, WindowScaledDragMixin {
+class _WindowDragCardState extends State<WindowDragCard>
+    with WindowBaseMixin, WindowScaledDragMixin {
   late Size initialSize;
   late double aspectRatio;
 
@@ -58,7 +58,7 @@ class _FloatingCardState extends State<FloatingCard> with WindowBaseMixin, Windo
   }
 
   @override
-  void didUpdateWidget(FloatingCard oldWidget) {
+  void didUpdateWidget(WindowDragCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     syncWindowIfChanged(widget.data.rect);
   }
@@ -94,19 +94,23 @@ class _FloatingCardState extends State<FloatingCard> with WindowBaseMixin, Windo
         decoration: BoxDecoration(
           color: AppColors.grey_800,
           borderRadius: getComponentRadius,
+          border: Border.all(
+            color: AppColors.grey_900,
+            width: 2,
+            strokeAlign: BorderSide.strokeAlignOutside,
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.changeOpacity(0.3),
-              blurRadius: 15,
+              color: Colors.black.changeOpacity(0.05),
+              blurRadius: 20,
               offset: const Offset(0, 4),
             ),
           ],
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: 6,
           children: [
-            widget.child.expanded(),
+            widget.data.content.expanded(),
 
             MouseRegion(
               cursor: isDragging ? SystemMouseCursors.grabbing : SystemMouseCursors.grab,
@@ -122,7 +126,7 @@ class _FloatingCardState extends State<FloatingCard> with WindowBaseMixin, Windo
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   color: Colors.transparent,
                   child: const Icon(
-                    Icons.drag_indicator_rounded,
+                    AppIcons.grip,
                     size: 20,
                     color: AppColors.grey_700,
                   ),
