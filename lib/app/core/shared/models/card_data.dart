@@ -8,5 +8,11 @@ class CardData extends DraggableItem {
   });
 
   @override
+  double get minWidth => 100;
+
+  @override
+  double get minHeight => 44;
+
+  @override
   List<Object?> get props => [id, rect, minWidth, minHeight];
 }
