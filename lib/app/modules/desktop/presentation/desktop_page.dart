@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:my_code_place/app/core/common/extensions/color_extension.dart';
 import 'package:my_code_place/app/core/common/extensions/context_extension.dart';
 import 'package:my_code_place/app/core/shared/models/card_data.dart';
 import 'package:my_code_place/app/core/shared/models/window_data.dart';
 import 'package:my_code_place/app/modules/desktop/presentation/controller/desktop_controller.dart';
+import 'package:my_code_place/app/ui/components/buy_us_coffe.dart';
 import 'package:my_code_place/app/ui/components/windows/window_card.dart';
 import 'package:my_code_place/app/ui/components/windows/window_drag_card.dart';
 import 'package:my_code_place/app/ui/theme/app_colors.dart';
@@ -40,22 +40,7 @@ class _DesktopPageState extends State<DesktopPage> {
         CardData(
           id: '3',
           rect: Rect.fromLTWH(16, context.height - 60, 180, 44),
-          content: Center(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 12),
-              child: Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/svgs/coffe.svg',
-                    width: 24,
-                    height: 24,
-                  ),
-
-                  const Text('Buy us a coffe?'),
-                ],
-              ),
-            ),
-          ),
+          content: const BuyUsCoffe(),
         ),
       ];
     });
