@@ -1,7 +1,7 @@
 name: my_code_place
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.0
+version: 0.1.0+1
 
 environment:
   sdk: ^3.10.0
@@ -26,6 +26,7 @@ dependencies:
   shared_preferences: ^2.5.3
   flutter_svg: ^2.2.3
   url_launcher: ^6.3.2
+  uuid: ^4.5.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

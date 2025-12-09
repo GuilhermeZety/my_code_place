@@ -5,12 +5,12 @@ import 'package:my_code_place/app/core/common/extensions/context_extension.dart'
 import 'package:my_code_place/app/core/shared/models/card_data.dart';
 import 'package:my_code_place/app/core/shared/models/window_data.dart';
 import 'package:my_code_place/app/modules/desktop/presentation/controller/desktop_controller.dart';
+import 'package:my_code_place/app/ui/components/app_menu_bar.dart';
 import 'package:my_code_place/app/ui/components/buy_us_coffe.dart';
 import 'package:my_code_place/app/ui/components/windows/window_card.dart';
 import 'package:my_code_place/app/ui/components/windows/window_drag_card.dart';
-import 'package:my_code_place/app/ui/theme/app_colors.dart';
-import 'package:my_code_place/app/ui/theme/app_icons.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 class DesktopPage extends StatefulWidget {
   const DesktopPage({super.key});
@@ -26,19 +26,13 @@ class _DesktopPageState extends State<DesktopPage> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.windows.value = [
-        WindowData(
-          id: '1',
-          title: 'Spotify',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/7/75/Spotify_icon.png',
-          rect: const Rect.fromLTWH(50, 50, 300, 200),
+        CardData(
+          id: const Uuid().v4(),
+          rect: Rect.fromLTWH((context.width - 196) / 2, context.height - 60, 180, 44),
+          content: const AppMenuBar(),
         ),
         CardData(
-          id: '2',
-          rect: Rect.fromLTWH(context.width - 196, context.height - 60, 180, 44),
-          content: _buildMenuContent(),
-        ),
-        CardData(
-          id: '3',
+          id: const Uuid().v4(),
           rect: Rect.fromLTWH(16, context.height - 60, 180, 44),
           content: const BuyUsCoffe(),
         ),
@@ -96,38 +90,6 @@ class _DesktopPageState extends State<DesktopPage> {
             },
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildMenuContent() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16),
-      child: Row(
-        mainAxisAlignment: .spaceBetween,
-        children: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              AppIcons.apps,
-              color: AppColors.grey_300,
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              AppIcons.lightning,
-              color: AppColors.grey_300,
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              AppIcons.settings,
-              color: AppColors.grey_300,
-            ),
-          ),
-        ],
       ),
     );
   }

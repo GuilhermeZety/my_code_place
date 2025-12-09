@@ -3,6 +3,7 @@ import 'package:my_code_place/app/core/shared/entities/draggable_item.dart';
 import 'package:signals/signals_flutter.dart';
 
 class DesktopController {
+  final showMenu = signal<bool>(true);
   final windows = signal<List<DraggableItem>>([]);
 
   void bringToFront(String id) {
