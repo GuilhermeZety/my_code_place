@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:my_code_place/app/core/common/extensions/color_extension.dart';
 import 'package:my_code_place/app/ui/components/anchored_menu_wrapper.dart';
+import 'package:my_code_place/app/ui/components/app_menu_bar_config_content.dart';
+import 'package:my_code_place/app/ui/components/windows/window_drag_card.dart';
 import 'package:my_code_place/app/ui/theme/app_colors.dart';
 import 'package:my_code_place/app/ui/theme/app_icons.dart';
 
 class AppMenuBar extends StatelessWidget {
-  const AppMenuBar({super.key});
+  const AppMenuBar({super.key, required this.windowKey});
+
+  final GlobalKey<WindowDragCardState> windowKey;
 
   @override
   Widget build(BuildContext context) {
+    double windowScale = windowKey.currentState?.scale ?? 1.0;
     return Padding(
       padding: const EdgeInsets.only(left: 16),
       child: Row(
@@ -18,16 +22,19 @@ class AppMenuBar extends StatelessWidget {
             icon: AppIcons.apps,
             menuSize: const Size(200, 150),
             menuContent: _buildMenuContent('Perfil', ['Meus Dados', 'Sair']),
+            windowScale: windowScale,
           ),
           AppMenuBarItem(
             icon: AppIcons.lightning,
             menuSize: const Size(200, 150),
             menuContent: _buildMenuContent('Perfil', ['Meus Dados', 'Sair']),
+            windowScale: windowScale,
           ),
           AppMenuBarItem(
             icon: AppIcons.settings,
             menuSize: const Size(200, 150),
-            menuContent: _buildMenuContent('Perfil', ['Meus Dados', 'Sair']),
+            menuContent: const AppMenuBarConfigContent(),
+            windowScale: windowScale,
           ),
         ],
       ),
@@ -38,48 +45,21 @@ class AppMenuBar extends StatelessWidget {
   Widget _buildMenuContent(String title, List<String> items) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.grey_800,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.grey_800.changeOpacity(0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        color: AppColors.grey_800,
+        border: Border.all(color: AppColors.grey_900, width: 2),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: const BoxDecoration(
-              color: AppColors.grey_700,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-            ),
-            child: Text(
-              title,
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: items
-                  .map(
-                    (item) => ListTile(
-                      dense: true,
-                      title: Text(item, style: const TextStyle(color: AppColors.grey_600)),
-                      onTap: () {
-                        print('Clicou em $item');
-                        // Lógica para fechar o menu poderia ser injetada aqui
-                      },
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-        ],
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: items
+            .map(
+              (item) => ListTile(
+                dense: true,
+                title: Text(item, style: const TextStyle(color: AppColors.grey_600)),
+                onTap: () {},
+              ),
+            )
+            .toList(),
       ),
     );
   }
@@ -91,11 +71,13 @@ class AppMenuBarItem extends StatefulWidget {
     required this.icon,
     required this.menuContent,
     required this.menuSize,
+    required this.windowScale,
   });
 
   final IconData icon;
   final Widget menuContent;
   final Size menuSize;
+  final double windowScale;
 
   @override
   State<AppMenuBarItem> createState() => _AppMenuBarItemState();
@@ -113,6 +95,7 @@ class _AppMenuBarItemState extends State<AppMenuBarItem> {
       key: _menuStateKey,
       menuSize: widget.menuSize,
       menuContent: widget.menuContent,
+      windowScale: widget.windowScale,
       child: IconButton(
         onPressed: () {
           var currentState = _menuStateKey.currentState!;

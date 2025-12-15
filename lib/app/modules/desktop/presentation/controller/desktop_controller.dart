@@ -80,4 +80,8 @@ class DesktopController {
       windows.value = currentList;
     }
   }
+
+  void addNewWindow(DraggableItem window) {
+    windows.value.add(window);
+  }
 }

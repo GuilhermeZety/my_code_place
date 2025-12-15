@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class AnchoredMenuWrapper extends StatefulWidget {
-  final Widget child; // O IconButton
-  final Widget menuContent; // O conteúdo do menu flutuante
-  final Size menuSize; // Tamanho fixo do menu (width, height)
-  final VoidCallback? onOpen; // Callback opcional
+  final Widget child;
+  final Widget menuContent;
+  final Size menuSize;
+  final VoidCallback? onOpen;
+  final double windowScale;
 
   const AnchoredMenuWrapper({
     super.key,
@@ -12,6 +14,7 @@ class AnchoredMenuWrapper extends StatefulWidget {
     required this.menuContent,
     required this.menuSize,
     this.onOpen,
+    this.windowScale = 1,
   });
 
   @override
@@ -27,22 +30,21 @@ class AnchoredMenuWrapperState extends State<AnchoredMenuWrapper>
   late Animation<double> _fadeAnimation;
 
   bool get isOpen => _overlayEntry != null;
-  // Estado para controlar se abre para cima ou para baixo
-  bool _showAbove = false;
+  bool _showTop = false;
+  bool _showRight = true;
 
   @override
   void initState() {
     super.initState();
-    // Configuração da animação (rápida, 200ms)
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 200),
-      reverseDuration: const Duration(milliseconds: 150),
+      duration: 200.ms,
+      reverseDuration: 150.ms,
     );
 
     _scaleAnimation = CurvedAnimation(
       parent: _animationController,
-      curve: Curves.easeOutBack, // Dá um efeito de "pulo" ao abrir
+      curve: Curves.easeOutBack,
       reverseCurve: Curves.easeIn,
     );
 
@@ -59,32 +61,36 @@ class AnchoredMenuWrapperState extends State<AnchoredMenuWrapper>
     super.dispose();
   }
 
-  // Função principal para mostrar o menu
   void showOverlay() {
-    if (_overlayEntry != null) return; // Já está aberto
+    // if already open, do nothing
+    if (_overlayEntry != null) return;
 
     final overlay = Overlay.of(context);
     final renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
     final offset = renderBox.localToGlobal(Offset.zero);
 
-    // Lógica para decidir se abre para CIMA ou para BAIXO
+    // logic to decide if open above or below
     final screenHeight = MediaQuery.of(context).size.height;
     final spaceBelow = screenHeight - (offset.dy + size.height);
-    final spaceAbove = offset.dy;
 
-    // Se não couber embaixo e tiver mais espaço em cima, inverte
-    // Adicionei uma margem de segurança de 10px
-    if (spaceBelow < widget.menuSize.height + 10 && spaceAbove > widget.menuSize.height) {
-      _showAbove = true;
+    if (spaceBelow < (widget.menuSize.height + 15) * widget.windowScale) {
+      _showTop = true;
     } else {
-      _showAbove = false;
+      _showTop = false;
     }
+
+    if (offset.dx < (widget.menuSize.width - 20) * widget.windowScale) {
+      _showRight = true;
+    } else {
+      _showRight = false;
+    }
+
+    final double widthOffset = _showRight ? 0 : -(widget.menuSize.width - 30);
 
     _overlayEntry = OverlayEntry(
       builder: (context) => Stack(
         children: [
-          // 1. Detector de toque fora para fechar o menu
           Positioned.fill(
             child: GestureDetector(
               onTap: closeOverlay,
@@ -92,20 +98,13 @@ class AnchoredMenuWrapperState extends State<AnchoredMenuWrapper>
               child: Container(color: Colors.transparent),
             ),
           ),
-          // 2. O Menu Flutuante ancorado
           CompositedTransformFollower(
             link: _layerLink,
             showWhenUnlinked: false,
-            // Ajusta o offset baseado na direção
-            offset: _showAbove
-                ? Offset(
-                    -(widget.menuSize.width - (widget.menuSize.width * 0.1)),
-                    -widget.menuSize.height - 10,
-                  ) // 10px de margem acima
-                : Offset(
-                    -(widget.menuSize.width - (widget.menuSize.width * 0.1)),
-                    size.height + 10,
-                  ), // 10px de margem abaixo
+            offset: Offset(
+              widthOffset,
+              _showTop ? -widget.menuSize.height - 5 : size.height + 5,
+            ),
             child: Material(
               color: Colors.transparent,
               child: SizedBox(
@@ -113,8 +112,10 @@ class AnchoredMenuWrapperState extends State<AnchoredMenuWrapper>
                 height: widget.menuSize.height,
                 child: ScaleTransition(
                   scale: _scaleAnimation,
-                  // O alinhamento da animação muda dependendo da direção
-                  alignment: _showAbove ? Alignment.bottomRight : Alignment.topRight,
+                  alignment: Alignment(
+                    _showRight ? -1 : 1,
+                    _showTop ? 1 : -1,
+                  ),
                   child: FadeTransition(
                     opacity: _fadeAnimation,
                     child: widget.menuContent,

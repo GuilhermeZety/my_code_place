@@ -25,11 +25,14 @@ class _DesktopPageState extends State<DesktopPage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final menuBarKey = GlobalKey<WindowDragCardState>();
+
       controller.windows.value = [
         CardData(
           id: const Uuid().v4(),
           rect: Rect.fromLTWH((context.width - 196) / 2, context.height - 60, 180, 44),
-          content: const AppMenuBar(),
+          content: AppMenuBar(windowKey: menuBarKey),
+          windowKey: menuBarKey,
         ),
         CardData(
           id: const Uuid().v4(),
@@ -70,7 +73,7 @@ class _DesktopPageState extends State<DesktopPage> {
                   ...windowList.map((window) {
                     if (window is CardData) {
                       return WindowDragCard(
-                        key: ValueKey(window.id),
+                        key: window.windowKey,
                         data: window,
                         screenSize: screenSize,
                         onFocus: () => controller.bringToFront(window.id),

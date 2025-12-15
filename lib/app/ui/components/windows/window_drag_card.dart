@@ -25,11 +25,11 @@ class WindowDragCard extends StatefulWidget {
   });
 
   @override
-  State<WindowDragCard> createState() => _WindowDragCardState();
+  State<WindowDragCard> createState() => WindowDragCardState();
 }
 
 // 1. Adicione o Mixin aqui
-class _WindowDragCardState extends State<WindowDragCard>
+class WindowDragCardState extends State<WindowDragCard>
     with WindowBaseMixin, WindowScaledDragMixin {
   late Size initialSize;
   late double aspectRatio;
@@ -47,6 +47,8 @@ class _WindowDragCardState extends State<WindowDragCard>
   double get minScale => 0.9;
   @override
   double get maxScale => 2.0;
+
+  double get scale => windowRect.width / initialSize.width;
 
   @override
   void initState() {
@@ -82,8 +84,6 @@ class _WindowDragCardState extends State<WindowDragCard>
   }
 
   Widget _buildScaledContent() {
-    final scale = windowRect.width / initialSize.width;
-
     return Transform(
       transform: Matrix4.diagonal3Values(scale, scale, 1.0),
       alignment: Alignment.topLeft,
